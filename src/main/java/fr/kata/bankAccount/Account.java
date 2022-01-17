@@ -2,9 +2,10 @@ package fr.kata.bankAccount;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 final public class Account {
     private final BigDecimal balance;
@@ -16,13 +17,13 @@ final public class Account {
             throw new AccountInitializationException("Account cannot be initialized with negative balance or null");
         }
         this.balance = initialBalance;
-        this.operations = new ArrayList<>();
+        this.operations = List.of();
         this.currentDateTime = currentDateTime;
     }
 
     private Account(BigDecimal newBalance, Supplier<LocalDateTime> currentDateTime, List<AccountOperation> operations) {
         this.balance = newBalance;
-        this.operations = operations;
+        this.operations = List.copyOf(operations);
         this.currentDateTime = currentDateTime;
     }
 
@@ -39,8 +40,8 @@ final public class Account {
             throw new IllegalAccountOperationArgumentException("Amount cannot be negative or null when deposit");
         }
         BigDecimal newBalance = this.balance.add(amount);
-        this.operations.add(new AccountOperation(AccountOperationType.DEPOSIT, amount, newBalance, currentDateTime.get()));
-        return new Account(newBalance, this.currentDateTime, this.operations);
+        AccountOperation accountOperation = new AccountOperation(AccountOperationType.DEPOSIT, amount, newBalance, currentDateTime.get());
+        return updateBalance(newBalance).registerNewOperation(accountOperation);
     }
 
     public Account withdrawal(BigDecimal amount) {
@@ -51,7 +52,16 @@ final public class Account {
         if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalAccountOperationArgumentException("Not enough savings on account to withdrawal");
         }
-        this.operations.add(new AccountOperation(AccountOperationType.WITHDRAWAL, amount, newBalance, this.currentDateTime.get()));
-        return new Account(newBalance, currentDateTime, this.operations);
+        AccountOperation accountOperation = new AccountOperation(AccountOperationType.WITHDRAWAL, amount, newBalance, this.currentDateTime.get());
+        return updateBalance(newBalance).registerNewOperation(accountOperation);
+    }
+
+    private Account updateBalance(BigDecimal newBalance) {
+        return new Account(newBalance, this.currentDateTime, this.operations);
+    }
+
+    private Account registerNewOperation(AccountOperation operation) {
+        List<AccountOperation> operationsUpdated = Stream.concat(this.operations.stream(), Stream.of(operation)).collect(Collectors.toList());
+        return new Account(this.balance, this.currentDateTime, operationsUpdated);
     }
 }

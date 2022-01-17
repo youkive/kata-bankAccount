@@ -42,7 +42,7 @@ public class AccountTest {
         // when
         Executable callable = () -> account.deposit(BigDecimal.valueOf(-1));
         // then
-        Assertions.assertThrows(IllegalOperationArgumentException.class, callable);
+        Assertions.assertThrows(IllegalAccountOperationArgumentException.class, callable);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class AccountTest {
         // when
         Executable callable = () -> account.deposit(null);
         // then
-        Assertions.assertThrows(IllegalOperationArgumentException.class, callable);
+        Assertions.assertThrows(IllegalAccountOperationArgumentException.class, callable);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class AccountTest {
         // when
         Executable callable = () -> account.withdrawal(null);
         // then
-        Assertions.assertThrows(IllegalOperationArgumentException.class, callable);
+        Assertions.assertThrows(IllegalAccountOperationArgumentException.class, callable);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class AccountTest {
         // when
         Executable callable = () -> account.withdrawal(BigDecimal.valueOf(-1));
         // then
-        Assertions.assertThrows(IllegalOperationArgumentException.class, callable);
+        Assertions.assertThrows(IllegalAccountOperationArgumentException.class, callable);
     }
 
     @Test

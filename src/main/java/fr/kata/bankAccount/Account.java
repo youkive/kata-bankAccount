@@ -5,16 +5,16 @@ import java.math.BigDecimal;
 public class Account {
     private final BigDecimal balance;
 
-    public Account(BigDecimal balance) {
-        if(balance == null || balance.compareTo(BigDecimal.ZERO) < 0) {
+    public Account(BigDecimal initialBalance) {
+        if(initialBalance == null || initialBalance.compareTo(BigDecimal.ZERO) < 0) {
             throw new AccountInitializationException("Account cannot be initialized with negative balance or null");
         }
-        this.balance = balance;
+        this.balance = initialBalance;
     }
 
     public Account deposit(BigDecimal amount) {
         if(amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalOperationArgumentException("Amount cannot be negative or null when deposit");
+            throw new IllegalAccountOperationArgumentException("Amount cannot be negative or null when deposit");
         }
         return new Account(this.balance.add(amount));
     }
@@ -25,7 +25,7 @@ public class Account {
 
     public Account withdrawal(BigDecimal amount) {
         if(amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalOperationArgumentException("Cannot withdrawal null amount");
+            throw new IllegalAccountOperationArgumentException("Cannot withdrawal null amount");
         }
         BigDecimal newBalance = this.balance.subtract(amount);
         if(newBalance.compareTo(BigDecimal.ZERO) < 0) {

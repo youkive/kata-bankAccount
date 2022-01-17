@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-final public class Account {
+public class Account {
     private final BigDecimal balance;
     private final List<AccountOperation> operations;
     private final Supplier<LocalDateTime> currentDateTime;

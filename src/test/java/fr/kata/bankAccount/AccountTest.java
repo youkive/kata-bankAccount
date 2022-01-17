@@ -54,4 +54,44 @@ public class AccountTest {
         // then
         Assertions.assertThrows(IllegalOperationArgumentException.class, callable);
     }
+
+    @Test
+    void should_withdrawal_savings () {
+        // given
+        Account account = new Account(BigDecimal.valueOf(35));
+        // when
+        Account updatedAccount = account.withdrawal(BigDecimal.valueOf(12));
+        // then
+        Assertions.assertEquals(updatedAccount.getBalance(), BigDecimal.valueOf(23));
+    }
+
+    @Test
+    void should_raise_illegal_operation_exception_when_withdrawal_null() {
+        // given
+        Account account = new Account(BigDecimal.valueOf(14));
+        // when
+        Executable callable = () -> account.withdrawal(null);
+        // then
+        Assertions.assertThrows(IllegalOperationArgumentException.class, callable);
+    }
+
+    @Test
+    void should_raise_illegal_operation_exception_when_withdrawal_negative_amount() {
+        // given
+        Account account = new Account(BigDecimal.valueOf(15));
+        // when
+        Executable callable = () -> account.withdrawal(BigDecimal.valueOf(-1));
+        // then
+        Assertions.assertThrows(IllegalOperationArgumentException.class, callable);
+    }
+
+    @Test
+    void should_raise_illegal_operation_exception_when_not_enough_savings() {
+        // given
+        Account account = new Account(BigDecimal.ZERO);
+        // when
+        Executable callable = () -> account.withdrawal(BigDecimal.valueOf(1));
+        // then
+        Assertions.assertThrows(IllegalAccountOperationArgumentException.class, callable);
+    }
 }

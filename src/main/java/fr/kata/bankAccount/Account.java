@@ -20,6 +20,12 @@ final public class Account {
         this.currentDateTime = currentDateTime;
     }
 
+    private Account(BigDecimal newBalance, Supplier<LocalDateTime> currentDateTime, List<AccountOperation> operations) {
+        this.balance = newBalance;
+        this.operations = operations;
+        this.currentDateTime = currentDateTime;
+    }
+
     public BigDecimal getBalance() {
         return balance;
     }
@@ -34,7 +40,7 @@ final public class Account {
         }
         BigDecimal newBalance = this.balance.add(amount);
         this.operations.add(new AccountOperation(AccountOperationType.DEPOSIT, amount, newBalance, currentDateTime.get()));
-        return new Account(newBalance, this.currentDateTime);
+        return new Account(newBalance, this.currentDateTime, this.operations);
     }
 
     public Account withdrawal(BigDecimal amount) {

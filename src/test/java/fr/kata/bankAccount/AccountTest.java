@@ -103,12 +103,12 @@ public class AccountTest {
         Supplier<LocalDateTime> currentDateTime = () -> LocalDateTime.parse("2022-01-17T22:33:12");
         Account account = new Account(BigDecimal.valueOf(10), currentDateTime);
         // when
-        account.deposit(BigDecimal.valueOf(20));
+        Account updatedAccount = account.deposit(BigDecimal.valueOf(20));
         // then
-        Assertions.assertEquals(account.getOperations().get(0).getType(), AccountOperationType.DEPOSIT);
-        Assertions.assertEquals(account.getOperations().get(0).getAmount(), BigDecimal.valueOf(20));
-        Assertions.assertEquals(account.getOperations().get(0).getBalance(), BigDecimal.valueOf(30));
-        Assertions.assertEquals(account.getOperations().get(0).getDate(), LocalDateTime.parse("2022-01-17T22:33:12"));
+        Assertions.assertEquals(updatedAccount.getOperations().get(0).getType(), AccountOperationType.DEPOSIT);
+        Assertions.assertEquals(updatedAccount.getOperations().get(0).getAmount(), BigDecimal.valueOf(20));
+        Assertions.assertEquals(updatedAccount.getOperations().get(0).getBalance(), BigDecimal.valueOf(30));
+        Assertions.assertEquals(updatedAccount.getOperations().get(0).getDate(), LocalDateTime.parse("2022-01-17T22:33:12"));
     }
 
 }

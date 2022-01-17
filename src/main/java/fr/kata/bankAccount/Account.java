@@ -51,6 +51,7 @@ final public class Account {
         if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalAccountOperationArgumentException("Not enough savings on account to withdrawal");
         }
-        return new Account(newBalance, currentDateTime);
+        this.operations.add(new AccountOperation(AccountOperationType.WITHDRAWAL, amount, newBalance, this.currentDateTime.get()));
+        return new Account(newBalance, currentDateTime, this.operations);
     }
 }

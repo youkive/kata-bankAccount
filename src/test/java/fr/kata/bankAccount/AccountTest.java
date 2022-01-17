@@ -111,4 +111,16 @@ public class AccountTest {
         Assertions.assertEquals(updatedAccount.getOperations().get(0).getDate(), LocalDateTime.parse("2022-01-17T22:33:12"));
     }
 
+    @Test
+    void should_register_withdrawal_operation_when_withdrawal_savings() {
+        // given
+        Account account = new Account(BigDecimal.valueOf(16), () -> LocalDateTime.parse("2022-01-17T22:55:16"));
+        // when
+        Account updatedAccount = account.withdrawal(BigDecimal.valueOf(4));
+        // then
+        Assertions.assertEquals(updatedAccount.getOperations().get(0).getType(), AccountOperationType.WITHDRAWAL);
+        Assertions.assertEquals(updatedAccount.getOperations().get(0).getAmount(), BigDecimal.valueOf(4));
+        Assertions.assertEquals(updatedAccount.getOperations().get(0).getBalance(), BigDecimal.valueOf(12));
+        Assertions.assertEquals(updatedAccount.getOperations().get(0).getDate(), LocalDateTime.parse("2022-01-17T22:55:16"));
+    }
 }

@@ -32,7 +32,7 @@ public class Account {
     }
 
     public List<AccountOperation> getOperations() {
-        return List.copyOf(operations);
+        return operations;
     }
 
     public Account deposit(BigDecimal amount) {

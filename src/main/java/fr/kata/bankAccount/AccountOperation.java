@@ -3,7 +3,7 @@ package fr.kata.bankAccount;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-class AccountOperation {
+final class AccountOperation {
     private final AccountOperationType type;
     private final BigDecimal amount;
     private final BigDecimal balance;

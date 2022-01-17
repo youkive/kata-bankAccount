@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class Account {
+final public class Account {
     private final BigDecimal balance;
     private final List<AccountOperation> operations;
     private final Supplier<LocalDateTime> currentDateTime;
@@ -20,6 +20,14 @@ public class Account {
         this.currentDateTime = currentDateTime;
     }
 
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public List<AccountOperation> getOperations() {
+        return List.copyOf(operations);
+    }
+
     public Account deposit(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalAccountOperationArgumentException("Amount cannot be negative or null when deposit");
@@ -27,10 +35,6 @@ public class Account {
         BigDecimal newBalance = this.balance.add(amount);
         this.operations.add(new AccountOperation(AccountOperationType.DEPOSIT, amount, newBalance, currentDateTime.get()));
         return new Account(newBalance, this.currentDateTime);
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
     }
 
     public Account withdrawal(BigDecimal amount) {
@@ -42,9 +46,5 @@ public class Account {
             throw new IllegalAccountOperationArgumentException("Not enough savings on account to withdrawal");
         }
         return new Account(newBalance, currentDateTime);
-    }
-
-    public List<AccountOperation> getOperations() {
-        return List.copyOf(operations);
     }
 }

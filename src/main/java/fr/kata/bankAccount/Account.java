@@ -41,7 +41,7 @@ public class Account {
         }
         BigDecimal newBalance = this.balance.add(amount);
         AccountOperation accountOperation = new AccountOperation(AccountOperationType.DEPOSIT, amount, newBalance, currentDateTime.get());
-        return updateBalance(newBalance).registerNewOperation(accountOperation);
+        return updateAccountAndRegisterOperation(newBalance, accountOperation);
     }
 
     public Account withdrawal(BigDecimal amount) {
@@ -53,15 +53,11 @@ public class Account {
             throw new IllegalAccountOperationArgumentException("Not enough savings on account to withdrawal");
         }
         AccountOperation accountOperation = new AccountOperation(AccountOperationType.WITHDRAWAL, amount, newBalance, this.currentDateTime.get());
-        return updateBalance(newBalance).registerNewOperation(accountOperation);
+        return updateAccountAndRegisterOperation(newBalance, accountOperation);
     }
 
-    private Account updateBalance(BigDecimal newBalance) {
-        return new Account(newBalance, this.currentDateTime, this.operations);
-    }
-
-    private Account registerNewOperation(AccountOperation operation) {
-        List<AccountOperation> operationsUpdated = Stream.concat(this.operations.stream(), Stream.of(operation)).collect(Collectors.toList());
-        return new Account(this.balance, this.currentDateTime, operationsUpdated);
+    private Account updateAccountAndRegisterOperation(BigDecimal newBalance, AccountOperation accountOperation) {
+        List<AccountOperation> operationsUpdated = Stream.concat(this.operations.stream(), Stream.of(accountOperation)).collect(Collectors.toList());
+        return new Account(newBalance, this.currentDateTime, operationsUpdated);
     }
 }

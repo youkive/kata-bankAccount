@@ -12,7 +12,11 @@ public class Account {
     private final List<AccountOperation> operations;
     private final Supplier<LocalDateTime> currentDateTime;
 
-    public Account(BigDecimal initialBalance, Supplier<LocalDateTime> currentDateTime) {
+    public Account(Supplier<LocalDateTime> currentDateTime) {
+        this(BigDecimal.ZERO, List.of(), currentDateTime);
+    }
+
+    protected Account(BigDecimal initialBalance, Supplier<LocalDateTime> currentDateTime) {
         this(initialBalance, List.of(), currentDateTime);
     }
 

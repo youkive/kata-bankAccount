@@ -17,7 +17,7 @@ public class AccountPrinter {
 
     public void print(Account account) {
         out.println("Date ## Operation Type ## Amount ## Balance");
-        account.getOperations().forEach(operation -> {
+        account.getStatement().getOperations().forEach(operation -> {
             StringBuilder lineStatement = new StringBuilder(operation.getDate().format(DATE_TIME_FORMATTER));
             lineStatement.append(SEPARATOR).append(operation.getType());
             lineStatement.append(SEPARATOR).append(operation.getAmount().setScale(2, RoundingMode.DOWN));

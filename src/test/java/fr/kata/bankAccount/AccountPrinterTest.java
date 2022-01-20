@@ -43,7 +43,7 @@ public class AccountPrinterTest {
     @Test
     void should_print_statement_of_account() throws IOException {
         // given
-        Account account = new Account(new AccountStatement(), () -> LocalDateTime.parse("2022-01-18T10:21:02")).deposit(BigDecimal.valueOf(54.264568)).withdrawal(BigDecimal.valueOf(10));
+        Account account = new Account(new AccountStatement(() -> LocalDateTime.parse("2022-01-18T10:21:02"))).deposit(BigDecimal.valueOf(54.264568)).withdrawal(BigDecimal.valueOf(10));
         AccountPrinter accountPrinter = new AccountPrinter(printer);
         // when
         accountPrinter.print(account);

@@ -1,23 +1,24 @@
 package fr.kata.bankAccount;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class AccountStatement {
     private final List<AccountOperation> operations;
+    private final Supplier<LocalDateTime> currentDateTime;
 
-    public AccountStatement() {
-        operations = List.of();
+    public AccountStatement(Supplier<LocalDateTime> currentDateTime) {
+        this.operations = List.of();
+        this.currentDateTime = currentDateTime;
     }
 
-    private AccountStatement(List<AccountOperation> operations) {
+    private AccountStatement(List<AccountOperation> operations, Supplier<LocalDateTime> currentDateTime) {
         this.operations = List.copyOf(operations);
-    }
-
-    public AccountStatement registerOperation(AccountOperation accountOperation) {
-        List<AccountOperation> operationsUpdated = Stream.concat(this.operations.stream(), Stream.of(accountOperation)).collect(Collectors.toList());
-        return new AccountStatement(operationsUpdated);
+        this.currentDateTime = currentDateTime;
     }
 
     public AccountOperation getOperationsAt(int operationIndex) {
@@ -26,5 +27,11 @@ public class AccountStatement {
 
     public List<AccountOperation> getOperations() {
         return this.operations;
+    }
+
+    protected AccountStatement registerOperation(AccountOperationType type, BigDecimal amount, BigDecimal balance) {
+        AccountOperation operationToRegister = new AccountOperation(type, amount, balance, currentDateTime.get());
+        List<AccountOperation> operationsUpdated = Stream.concat(this.operations.stream(), Stream.of(operationToRegister)).collect(Collectors.toList());
+        return new AccountStatement(operationsUpdated, currentDateTime);
     }
 }

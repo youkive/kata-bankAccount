@@ -10,9 +10,17 @@ import java.time.LocalDateTime;
 public class AccountTest {
 
     @Test
+    void cannot_be_initialized_with_statement_null () {
+        // when
+        Executable callable = () -> new Account(null);
+        // then
+        Assertions.assertThrows(IllegalAccountOperationArgumentException.class, callable);
+    }
+
+    @Test
     void cannot_be_initiate_with_null_balance() {
         // when
-        Executable callable = () -> new Account(null, new AccountStatement(), LocalDateTime::now);
+        Executable callable = () -> new Account(null, new AccountStatement(LocalDateTime::now));
         // then
         Assertions.assertThrows(AccountInitializationException.class, callable);
     }
@@ -20,7 +28,7 @@ public class AccountTest {
     @Test
     void cannot_be_initiate_with_negative_balance() {
         // when
-        Executable callable = () -> new Account(BigDecimal.valueOf(-1), new AccountStatement(), LocalDateTime::now);
+        Executable callable = () -> new Account(BigDecimal.valueOf(-1), new AccountStatement(LocalDateTime::now));
         // then
         Assertions.assertThrows(AccountInitializationException.class, callable);
     }
@@ -28,8 +36,8 @@ public class AccountTest {
     @Test
     void should_return_account_with_Zero_by_default() {
         // when
-        AccountStatement accountStatement = new AccountStatement();
-        Account account = new Account(accountStatement, LocalDateTime::now);
+        AccountStatement accountStatement = new AccountStatement(LocalDateTime::now);
+        Account account = new Account(accountStatement);
         // then
         Assertions.assertEquals(account.getBalance(), BigDecimal.ZERO);
     }
@@ -37,8 +45,8 @@ public class AccountTest {
     @Test
     void should_make_deposit_on_account_for_valid_amount() {
         // given
-        AccountStatement accountStatement = new AccountStatement();
-        Account account = new Account(accountStatement, LocalDateTime::now);
+        AccountStatement accountStatement = new AccountStatement(LocalDateTime::now);
+        Account account = new Account(accountStatement);
         // when
         Account updatedAccount = account.deposit(BigDecimal.valueOf(12)).deposit(BigDecimal.valueOf(15));
         // then
@@ -48,8 +56,8 @@ public class AccountTest {
     @Test
     void should_raise_illegal_operation_exception_when_deposit_negative_amount() {
         // given
-        AccountStatement accountStatement = new AccountStatement();
-        Account account = new Account(accountStatement, LocalDateTime::now);
+        AccountStatement accountStatement = new AccountStatement(LocalDateTime::now);
+        Account account = new Account(accountStatement);
         // when
         Executable callable = () -> account.deposit(BigDecimal.valueOf(-1));
         // then
@@ -59,8 +67,8 @@ public class AccountTest {
     @Test
     void should_raise_illegal_operation_exception_when_deposit_null() {
         // given
-        AccountStatement accountStatement = new AccountStatement();
-        Account account = new Account(accountStatement, LocalDateTime::now);
+        AccountStatement accountStatement = new AccountStatement(LocalDateTime::now);
+        Account account = new Account(accountStatement);
         // when
         Executable callable = () -> account.deposit(null);
         // then
@@ -68,10 +76,10 @@ public class AccountTest {
     }
 
     @Test
-    void should_withdrawal_savings () {
+    void should_withdrawal_savings() {
         // given
-        AccountStatement accountStatement = new AccountStatement();
-        Account account = new Account(BigDecimal.valueOf(35), accountStatement, LocalDateTime::now);
+        AccountStatement accountStatement = new AccountStatement(LocalDateTime::now);
+        Account account = new Account(BigDecimal.valueOf(35), accountStatement);
         // when
         Account updatedAccount = account.withdrawal(BigDecimal.valueOf(12));
         // then
@@ -81,8 +89,8 @@ public class AccountTest {
     @Test
     void should_raise_illegal_operation_exception_when_withdrawal_null() {
         // given
-        AccountStatement accountStatement = new AccountStatement();
-        Account account = new Account(accountStatement, LocalDateTime::now);
+        AccountStatement accountStatement = new AccountStatement(LocalDateTime::now);
+        Account account = new Account(accountStatement);
         // when
         Executable callable = () -> account.withdrawal(null);
         // then
@@ -92,8 +100,8 @@ public class AccountTest {
     @Test
     void should_raise_illegal_operation_exception_when_withdrawal_negative_amount() {
         // given
-        AccountStatement accountStatement = new AccountStatement();
-        Account account = new Account(accountStatement, LocalDateTime::now);
+        AccountStatement accountStatement = new AccountStatement(LocalDateTime::now);
+        Account account = new Account(accountStatement);
         // when
         Executable callable = () -> account.withdrawal(BigDecimal.valueOf(-1));
         // then
@@ -103,8 +111,8 @@ public class AccountTest {
     @Test
     void should_raise_illegal_operation_exception_when_not_enough_savings() {
         // given
-        AccountStatement accountStatement = new AccountStatement();
-        Account account = new Account(accountStatement, LocalDateTime::now);
+        AccountStatement accountStatement = new AccountStatement(LocalDateTime::now);
+        Account account = new Account(accountStatement);
         // when
         Executable callable = () -> account.withdrawal(BigDecimal.valueOf(1));
         // then
@@ -114,8 +122,8 @@ public class AccountTest {
     @Test
     void should_register_deposit_operation_when_deposit_savings() {
         // given
-        AccountStatement accountStatement = new AccountStatement();
-        Account account = new Account(BigDecimal.valueOf(10), accountStatement, () -> LocalDateTime.parse("2022-01-17T22:33:12"));
+        AccountStatement accountStatement = new AccountStatement(() -> LocalDateTime.parse("2022-01-17T22:33:12"));
+        Account account = new Account(BigDecimal.valueOf(10), accountStatement);
         // when
         Account updatedAccount = account.deposit(BigDecimal.valueOf(20));
         // then
@@ -128,8 +136,8 @@ public class AccountTest {
     @Test
     void should_register_withdrawal_operation_when_withdrawal_savings() {
         // given
-        AccountStatement accountStatement = new AccountStatement();
-        Account account = new Account(BigDecimal.valueOf(16), accountStatement, () -> LocalDateTime.parse("2022-01-17T22:55:16"));
+        AccountStatement accountStatement = new AccountStatement(() -> LocalDateTime.parse("2022-01-17T22:55:16"));
+        Account account = new Account(BigDecimal.valueOf(16), accountStatement);
         // when
         Account updatedAccount = account.withdrawal(BigDecimal.valueOf(4));
         // then

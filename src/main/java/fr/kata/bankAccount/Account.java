@@ -1,26 +1,24 @@
 package fr.kata.bankAccount;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.function.Supplier;
 
 public class Account {
     private final BigDecimal balance;
-    private final Supplier<LocalDateTime> currentDateTime;
     private final AccountStatement accountStatement;
 
-    public Account(AccountStatement accountStatement, Supplier<LocalDateTime> currentDateTime) {
-        this(BigDecimal.ZERO, accountStatement, currentDateTime);
+    public Account(AccountStatement accountStatement) {
+        this(BigDecimal.ZERO, accountStatement);
     }
 
-
-    protected Account(BigDecimal newBalance, AccountStatement accountStatement, Supplier<LocalDateTime> currentDateTime) {
-        this.accountStatement = accountStatement;
+    protected Account(BigDecimal newBalance, AccountStatement accountStatement) {
+        if (accountStatement == null) {
+            throw new IllegalAccountOperationArgumentException("Statement cannot be null");
+        }
         if (newBalance == null || newBalance.signum() < 0) {
             throw new AccountInitializationException("Account cannot be initialized with negative balance or null");
         }
+        this.accountStatement = accountStatement;
         this.balance = newBalance;
-        this.currentDateTime = currentDateTime;
     }
 
     public BigDecimal getBalance() {
@@ -36,8 +34,7 @@ public class Account {
             throw new IllegalAccountOperationArgumentException("Amount cannot be negative or null when deposit");
         }
         BigDecimal newBalance = this.balance.add(amount);
-        AccountOperation accountOperation = new AccountOperation(AccountOperationType.DEPOSIT, amount, newBalance, currentDateTime.get());
-        return new Account(newBalance, this.accountStatement.registerOperation(accountOperation), this.currentDateTime);
+        return new Account(newBalance, this.accountStatement.registerOperation(AccountOperationType.DEPOSIT, amount, newBalance));
     }
 
     public Account withdrawal(BigDecimal amount) {
@@ -48,8 +45,7 @@ public class Account {
         if (newBalance.signum() < 0) {
             throw new IllegalAccountOperationArgumentException("Not enough savings on account to withdrawal");
         }
-        AccountOperation accountOperation = new AccountOperation(AccountOperationType.WITHDRAWAL, amount, newBalance, this.currentDateTime.get());
-        return new Account(newBalance, this.accountStatement.registerOperation(accountOperation), this.currentDateTime);
+        return new Account(newBalance, this.accountStatement.registerOperation(AccountOperationType.WITHDRAWAL, amount, newBalance));
     }
 
 }

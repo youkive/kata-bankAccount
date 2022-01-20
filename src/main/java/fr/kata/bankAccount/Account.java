@@ -2,30 +2,24 @@ package fr.kata.bankAccount;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Account {
     private final BigDecimal balance;
-    private final List<AccountOperation> operations;
     private final Supplier<LocalDateTime> currentDateTime;
+    private final AccountStatement accountStatement;
 
-    public Account(Supplier<LocalDateTime> currentDateTime) {
-        this(BigDecimal.ZERO, List.of(), currentDateTime);
+    public Account(AccountStatement accountStatement, Supplier<LocalDateTime> currentDateTime) {
+        this(BigDecimal.ZERO, accountStatement, currentDateTime);
     }
 
-    protected Account(BigDecimal initialBalance, Supplier<LocalDateTime> currentDateTime) {
-        this(initialBalance, List.of(), currentDateTime);
-    }
 
-    private Account(BigDecimal newBalance, List<AccountOperation> operations, Supplier<LocalDateTime> currentDateTime) {
+    protected Account(BigDecimal newBalance, AccountStatement accountStatement, Supplier<LocalDateTime> currentDateTime) {
+        this.accountStatement = accountStatement;
         if (newBalance == null || newBalance.signum() < 0) {
             throw new AccountInitializationException("Account cannot be initialized with negative balance or null");
         }
         this.balance = newBalance;
-        this.operations = List.copyOf(operations);
         this.currentDateTime = currentDateTime;
     }
 
@@ -33,8 +27,8 @@ public class Account {
         return balance;
     }
 
-    public List<AccountOperation> getOperations() {
-        return operations;
+    public AccountStatement getStatement() {
+        return this.accountStatement;
     }
 
     public Account deposit(BigDecimal amount) {
@@ -43,7 +37,7 @@ public class Account {
         }
         BigDecimal newBalance = this.balance.add(amount);
         AccountOperation accountOperation = new AccountOperation(AccountOperationType.DEPOSIT, amount, newBalance, currentDateTime.get());
-        return updateAccountAndRegisterOperation(newBalance, accountOperation);
+        return new Account(newBalance, this.accountStatement.registerOperation(accountOperation), this.currentDateTime);
     }
 
     public Account withdrawal(BigDecimal amount) {
@@ -55,11 +49,7 @@ public class Account {
             throw new IllegalAccountOperationArgumentException("Not enough savings on account to withdrawal");
         }
         AccountOperation accountOperation = new AccountOperation(AccountOperationType.WITHDRAWAL, amount, newBalance, this.currentDateTime.get());
-        return updateAccountAndRegisterOperation(newBalance, accountOperation);
+        return new Account(newBalance, this.accountStatement.registerOperation(accountOperation), this.currentDateTime);
     }
 
-    private Account updateAccountAndRegisterOperation(BigDecimal newBalance, AccountOperation accountOperation) {
-        List<AccountOperation> operationsUpdated = Stream.concat(this.operations.stream(), Stream.of(accountOperation)).collect(Collectors.toList());
-        return new Account(newBalance, operationsUpdated, this.currentDateTime);
-    }
 }

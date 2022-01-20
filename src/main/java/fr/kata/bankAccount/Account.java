@@ -13,15 +13,13 @@ public class Account {
     private final Supplier<LocalDateTime> currentDateTime;
 
     public Account(BigDecimal initialBalance, Supplier<LocalDateTime> currentDateTime) {
-        if (initialBalance == null || initialBalance.compareTo(BigDecimal.ZERO) < 0) {
-            throw new AccountInitializationException("Account cannot be initialized with negative balance or null");
-        }
-        this.balance = initialBalance;
-        this.operations = List.of();
-        this.currentDateTime = currentDateTime;
+        this(initialBalance, List.of(), currentDateTime);
     }
 
-    private Account(BigDecimal newBalance, Supplier<LocalDateTime> currentDateTime, List<AccountOperation> operations) {
+    private Account(BigDecimal newBalance, List<AccountOperation> operations, Supplier<LocalDateTime> currentDateTime) {
+        if (newBalance == null || newBalance.signum() < 0) {
+            throw new AccountInitializationException("Account cannot be initialized with negative balance or null");
+        }
         this.balance = newBalance;
         this.operations = List.copyOf(operations);
         this.currentDateTime = currentDateTime;
@@ -36,7 +34,7 @@ public class Account {
     }
 
     public Account deposit(BigDecimal amount) {
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
+        if (amount == null || amount.signum() < 0) {
             throw new IllegalAccountOperationArgumentException("Amount cannot be negative or null when deposit");
         }
         BigDecimal newBalance = this.balance.add(amount);
@@ -45,11 +43,11 @@ public class Account {
     }
 
     public Account withdrawal(BigDecimal amount) {
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalAccountOperationArgumentException("Cannot withdrawal null amount");
+        if (amount == null || amount.signum() < 0) {
+            throw new IllegalAccountOperationArgumentException("Cannot withdrawal negative or null amount");
         }
         BigDecimal newBalance = this.balance.subtract(amount);
-        if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+        if (newBalance.signum() < 0) {
             throw new IllegalAccountOperationArgumentException("Not enough savings on account to withdrawal");
         }
         AccountOperation accountOperation = new AccountOperation(AccountOperationType.WITHDRAWAL, amount, newBalance, this.currentDateTime.get());
@@ -58,6 +56,6 @@ public class Account {
 
     private Account updateAccountAndRegisterOperation(BigDecimal newBalance, AccountOperation accountOperation) {
         List<AccountOperation> operationsUpdated = Stream.concat(this.operations.stream(), Stream.of(accountOperation)).collect(Collectors.toList());
-        return new Account(newBalance, this.currentDateTime, operationsUpdated);
+        return new Account(newBalance, operationsUpdated, this.currentDateTime);
     }
 }

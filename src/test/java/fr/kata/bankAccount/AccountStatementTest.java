@@ -14,7 +14,7 @@ public class AccountStatementTest {
         // when
         Executable callable = () -> new AccountStatement(null);
         // then
-        Assertions.assertThrows(IllegalAccountOperationArgumentException.class, callable);
+        Assertions.assertThrows(NullPointerException.class, callable);
     }
 
     @Test

@@ -3,6 +3,7 @@ package fr.kata.bankAccount;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,11 +17,8 @@ public class AccountStatement {
     }
 
     private AccountStatement(List<AccountOperation> operations, Supplier<LocalDateTime> currentDateTime) {
-        if(currentDateTime == null){
-            throw new IllegalAccountOperationArgumentException("statement cannot have null date time supplier");
-        }
         this.operations = List.copyOf(operations);
-        this.currentDateTime = currentDateTime;
+        this.currentDateTime = Objects.requireNonNull(currentDateTime);
     }
 
     public AccountOperation getOperationsAt(int operationIndex) {

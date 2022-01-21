@@ -12,7 +12,7 @@ public class Account {
 
     Account(BigDecimal newBalance, AccountStatement accountStatement) {
         if (accountStatement == null) {
-            throw new IllegalAccountOperationArgumentException("Statement cannot be null");
+            throw new AccountInitializationException("Statement cannot be null");
         }
         if (newBalance == null || newBalance.signum() < 0) {
             throw new AccountInitializationException("Account cannot be initialized with negative balance or null");

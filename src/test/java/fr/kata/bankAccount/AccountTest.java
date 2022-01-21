@@ -128,9 +128,6 @@ public class AccountTest {
         Account updatedAccount = account.deposit(BigDecimal.valueOf(20));
         // then
         Assertions.assertEquals(updatedAccount.getStatement().getOperationsAt(0).getType(), AccountOperationType.DEPOSIT);
-        Assertions.assertEquals(updatedAccount.getStatement().getOperationsAt(0).getAmount(), BigDecimal.valueOf(20));
-        Assertions.assertEquals(updatedAccount.getStatement().getOperationsAt(0).getBalance(), BigDecimal.valueOf(30));
-        Assertions.assertEquals(updatedAccount.getStatement().getOperationsAt(0).getDate(), LocalDateTime.parse("2022-01-17T22:33:12"));
     }
 
     @Test
@@ -142,8 +139,5 @@ public class AccountTest {
         Account updatedAccount = account.withdrawal(BigDecimal.valueOf(4));
         // then
         Assertions.assertEquals(updatedAccount.getStatement().getOperationsAt(0).getType(), AccountOperationType.WITHDRAWAL);
-        Assertions.assertEquals(updatedAccount.getStatement().getOperationsAt(0).getAmount(), BigDecimal.valueOf(4));
-        Assertions.assertEquals(updatedAccount.getStatement().getOperationsAt(0).getBalance(), BigDecimal.valueOf(12));
-        Assertions.assertEquals(updatedAccount.getStatement().getOperationsAt(0).getDate(), LocalDateTime.parse("2022-01-17T22:55:16"));
     }
 }

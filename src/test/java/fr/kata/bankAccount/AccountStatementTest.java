@@ -2,11 +2,20 @@ package fr.kata.bankAccount;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class AccountStatementTest {
+
+    @Test
+    void cannot_initialize_statement_with_null_date_time_supplier() {
+        // when
+        Executable callable = () -> new AccountStatement(null);
+        // then
+        Assertions.assertThrows(IllegalAccountOperationArgumentException.class, callable);
+    }
 
     @Test
     void can_register_operation() {

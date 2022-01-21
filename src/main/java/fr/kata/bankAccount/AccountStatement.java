@@ -16,6 +16,9 @@ public class AccountStatement {
     }
 
     private AccountStatement(List<AccountOperation> operations, Supplier<LocalDateTime> currentDateTime) {
+        if(currentDateTime == null){
+            throw new IllegalAccountOperationArgumentException("statement cannot have null date time supplier");
+        }
         this.operations = List.copyOf(operations);
         this.currentDateTime = currentDateTime;
     }

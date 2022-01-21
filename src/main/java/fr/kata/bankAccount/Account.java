@@ -6,11 +6,11 @@ public class Account {
     private final BigDecimal balance;
     private final AccountStatement accountStatement;
 
-    public Account(AccountStatement accountStatement) {
+    Account(AccountStatement accountStatement) {
         this(BigDecimal.ZERO, accountStatement);
     }
 
-    protected Account(BigDecimal newBalance, AccountStatement accountStatement) {
+    Account(BigDecimal newBalance, AccountStatement accountStatement) {
         if (accountStatement == null) {
             throw new IllegalAccountOperationArgumentException("Statement cannot be null");
         }

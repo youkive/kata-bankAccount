@@ -11,9 +11,8 @@ public class AccountStatement {
     private final List<AccountOperation> operations;
     private final Supplier<LocalDateTime> currentDateTime;
 
-    public AccountStatement(Supplier<LocalDateTime> currentDateTime) {
-        this.operations = List.of();
-        this.currentDateTime = currentDateTime;
+    AccountStatement(Supplier<LocalDateTime> currentDateTime) {
+        this(List.of(), currentDateTime);
     }
 
     private AccountStatement(List<AccountOperation> operations, Supplier<LocalDateTime> currentDateTime) {
@@ -29,7 +28,7 @@ public class AccountStatement {
         return this.operations;
     }
 
-    protected AccountStatement registerOperation(AccountOperationType type, BigDecimal amount, BigDecimal balance) {
+    AccountStatement registerOperation(AccountOperationType type, BigDecimal amount, BigDecimal balance) {
         AccountOperation operationToRegister = new AccountOperation(type, amount, balance, currentDateTime.get());
         List<AccountOperation> operationsUpdated = Stream.concat(this.operations.stream(), Stream.of(operationToRegister)).collect(Collectors.toList());
         return new AccountStatement(operationsUpdated, currentDateTime);
